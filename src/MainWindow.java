@@ -1,14 +1,19 @@
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import javax.sound.sampled.*;
+import org.jfree.chart.axis.LogarithmicAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYDifferenceRenderer;
+import org.jfree.ui.RectangleInsets;
 
 /**
  *
@@ -21,9 +26,13 @@ public class MainWindow extends javax.swing.JFrame {
      */
     public MainWindow() {
         initComponents();
+        initLabels();
         soundMaker = new SoundMaker();
+        exam = new Exam("Badanie",this.sldAge.getValue());
+        drawChart();
     }
     SoundMaker soundMaker;
+    Exam exam;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -39,6 +48,11 @@ public class MainWindow extends javax.swing.JFrame {
         tpnOptions = new javax.swing.JTabbedPane();
         pnlExam = new javax.swing.JPanel();
         btnChart = new javax.swing.JButton();
+        lblAge = new javax.swing.JLabel();
+        sldAge = new javax.swing.JSlider();
+        jProgressBar1 = new javax.swing.JProgressBar();
+        cobGender = new javax.swing.JComboBox();
+        jLabel1 = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -59,7 +73,7 @@ public class MainWindow extends javax.swing.JFrame {
         pnlChart.setLayout(pnlChartLayout);
         pnlChartLayout.setHorizontalGroup(
             pnlChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 602, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         pnlChartLayout.setVerticalGroup(
             pnlChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -79,18 +93,35 @@ public class MainWindow extends javax.swing.JFrame {
             pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlExamLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnChart, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+                .addComponent(btnChart, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnlExamLayout.setVerticalGroup(
             pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlExamLayout.createSequentialGroup()
-                .addContainerGap(394, Short.MAX_VALUE)
+                .addContainerGap(399, Short.MAX_VALUE)
                 .addComponent(btnChart)
                 .addContainerGap())
         );
 
         tpnOptions.addTab("Badanie", pnlExam);
+
+        lblAge.setText("Wiek: 0");
+
+        sldAge.setMinorTickSpacing(1);
+        sldAge.setPaintTicks(true);
+        sldAge.setToolTipText("wiek badanego");
+        sldAge.setValue(22);
+        sldAge.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sldAgeStateChanged(evt);
+            }
+        });
+
+        cobGender.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Kobieta", "Mężczyzna" }));
+        cobGender.setSelectedIndex(1);
+
+        jLabel1.setText("Płeć:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -98,63 +129,120 @@ public class MainWindow extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnlChart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblAge, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cobGender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(sldAge, javax.swing.GroupLayout.PREFERRED_SIZE, 558, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(tpnOptions)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(72, 72, 72)
-                        .addComponent(pnlChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(tpnOptions)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(sldAge, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblAge, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cobGender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pnlChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(7, 7, 7))
+                    .addComponent(tpnOptions))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    private void initLabels() {
+        this.lblAge.setText("Wiek: " + Integer.toString(this.sldAge.getValue()));
+    }
 
+    private void drawChart() {
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(exam.getDownLimitRange());
+        dataset.addSeries(exam.getUpLimitRange());
+        
+        dataset.addSeries(exam.getLeftEar());
+        dataset.addSeries(exam.getRightEar());
+        
+
+        //Tworzymy wykres XY
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Wykres słyszalności",//Tytuł
+                "x- Częstotliwość", // x-axis Opis
+                "y- Głośność", // y-axis Opis
+                dataset, // Dane
+                PlotOrientation.VERTICAL, // Orjentacja wykresu /HORIZONTAL
+                true, // pozkaż legende
+                true, // podpowiedzi tooltips
+                false
+        );
+        //Dodanie wykresu do panelu
+
+        ChartPanel plot = new ChartPanel(chart);
+        plot.setVisible(true);
+
+        XYPlot xyplot = (XYPlot) chart.getPlot();
+        XYDifferenceRenderer xydifferencerenderer = new XYDifferenceRenderer(Color.green, Color.red, false);
+        xydifferencerenderer.setRoundXCoordinates(true);
+        xyplot.setDomainCrosshairLockedOnData(true);
+        xyplot.setRangeCrosshairLockedOnData(true);
+        xyplot.setDomainCrosshairVisible(true);
+        xyplot.setRangeCrosshairVisible(true);
+        xyplot.setRenderer(xydifferencerenderer);
+        xyplot.setBackgroundPaint(Color.lightGray);
+        xyplot.setDomainGridlinePaint(Color.white);
+        xyplot.setRangeGridlinePaint(Color.white);
+        xyplot.setAxisOffset(new RectangleInsets(5D, 5D, 5D, 5D));
+        
+        NumberAxis domainAxis = new LogarithmicAxis("Log(y)");
+        NumberAxis rangeAxis = new NumberAxis("x");
+        xyplot.setDomainAxis(domainAxis);
+        xyplot.setRangeAxis(rangeAxis);
+        //DateAxis dateaxis = new DateAxis("Time");
+        //dateaxis.setLowerMargin(0.0D);
+       // dateaxis.setUpperMargin(0.0D);
+       // xyplot.setDomainAxis(dateaxis);
+        xyplot.setForegroundAlpha(0.5F);
+
+        pnlChart.setLayout(new java.awt.BorderLayout());
+        pnlChart.add(plot, BorderLayout.CENTER);
+
+        pnlChart.validate();
+    }
     private void btnChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChartActionPerformed
         try {
             soundMaker.play();
-             } catch (LineUnavailableException ex) {
+        } catch (LineUnavailableException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
-//Dane do wykresu 3d
-            XYSeries leftEar = new XYSeries("Lewe ucho");
-            XYSeries rightEar = new XYSeries("Prawe ucho");
-            leftEar.add(0, 0);
-            rightEar.add(0, 0);
-            
-            XYSeriesCollection dataset = new XYSeriesCollection();
-            dataset.addSeries(rightEar);
-            dataset.addSeries(leftEar);
-            
-            //Tworzymy wykres XY
-            JFreeChart chart = ChartFactory.createXYLineChart(
-                    "Wykres słyszalności",//Tytuł
-                    "x- Częstotliwość", // x-axis Opis
-                    "y- Głośność", // y-axis Opis
-                    dataset, // Dane
-                    PlotOrientation.VERTICAL, // Orjentacja wykresu /HORIZONTAL
-                    true, // pozkaż legende
-                    true, // podpowiedzi tooltips
-                    false
-            );
-            
-            //Dodanie wykresu do panelu
-            ChartPanel plot = new ChartPanel(chart);
-            plot.setVisible(true);
-            pnlChart.setLayout(new java.awt.BorderLayout());
-            pnlChart.add(plot, BorderLayout.CENTER);
-            pnlChart.validate();
-       
+
+
     }//GEN-LAST:event_btnChartActionPerformed
+
+    private void sldAgeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldAgeStateChanged
+        this.lblAge.setText("Wiek: " + Integer.toString(this.sldAge.getValue()));
+        exam.setAge(this.sldAge.getValue());
+        exam.setUpLimitRange();
+        exam.setDownLimitRange();
+    }//GEN-LAST:event_sldAgeStateChanged
 
     /**
      * @param args the command line arguments
@@ -194,9 +282,14 @@ public class MainWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChart;
+    private javax.swing.JComboBox cobGender;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JLabel lblAge;
     private javax.swing.JPanel pnlChart;
     private javax.swing.JPanel pnlExam;
+    private javax.swing.JSlider sldAge;
     private javax.swing.JTabbedPane tpnOptions;
     // End of variables declaration//GEN-END:variables
 }
