@@ -9,32 +9,39 @@ public class SoundMaker {
 
     final int SAMPLING_RATE = 44100;            // Audio sampling rate
     final int SAMPLE_SIZE = 2;                  // Audio sample size in bytes
-
+    float volumeLevel=0;
     SourceDataLine line;
     double fFreq = 440;                         // Frequency of sine wave in hz
-
+    FloatControl volume=null;
+    FloatControl balance=null;
+    int currentChanel=0;
+    
     //Position through the sine wave as a percentage (i.e. 0 to 1 is 0 to 2*PI)
     double fCyclePosition = 0;
 
     public void play() throws LineUnavailableException {
+
         //Open up audio output, using 44100hz sampling rate, 16 bit samples, mono, and big 
         // endian byte ordering
-        AudioFormat format = new AudioFormat(SAMPLING_RATE, 16, 1, true, true);
+        AudioFormat format = new AudioFormat(SAMPLING_RATE, 16, 2, true, true); 
+       
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
-
         if (!AudioSystem.isLineSupported(info)) {
             System.out.println("Line matching " + info + " is not supported.");
             throw new LineUnavailableException();
         }
-
         line = (SourceDataLine) AudioSystem.getLine(info);
         line.open(format);
+        
+        volume= (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN); 
+        balance= (FloatControl) line.getControl(FloatControl.Type.BALANCE); 
+        balance.setValue(-1);
+        volume.setValue(volumeLevel);
         line.start();
-
         // Make our buffer size match audio system's buffer
         ByteBuffer cBuf = ByteBuffer.allocate(line.getBufferSize());
 
-        int ctSamplesTotal = SAMPLING_RATE * 5;         // Output for roughly 5 seconds
+        int ctSamplesTotal = SAMPLING_RATE * 1;         // Output for roughly 1 seconds
 
         //On each pass main loop fills the available free space in the audio buffer
         //Main loop creates audio samples for sine wave, runs until we tell the thread to exit
@@ -73,6 +80,46 @@ public class SoundMaker {
     }
 
     public SoundMaker() {
+    }
+
+    public SourceDataLine getLine() {
+        return line;
+    }
+
+    public void setLine(SourceDataLine line) {
+        this.line = line;
+    }
+
+    public double getfFreq() {
+        return fFreq;
+    }
+
+    public void setfFreq(double fFreq) {
+        this.fFreq = fFreq;
+    }
+
+    public double getfCyclePosition() {
+        return fCyclePosition;
+    }
+
+    public void setfCyclePosition(double fCyclePosition) {
+        this.fCyclePosition = fCyclePosition;
+    }
+
+    public float getVolumeLevel() {
+        return volumeLevel;
+    }
+
+    public void setVolumeLevel(float volumeLevel) {
+        this.volumeLevel = volumeLevel*86/100-80;
+    }
+
+    public int getCurrentChanel() {
+        return currentChanel;
+    }
+
+    public void setCurrentChanel(int currentChanel) {
+        this.currentChanel = currentChanel;
     }
     
 }

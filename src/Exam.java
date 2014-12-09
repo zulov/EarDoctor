@@ -11,33 +11,32 @@ public class Exam {
     XYSeries upLimitRange;
     XYSeries downLimitRange;
     String name;
+    boolean comleted=false;
     int age;
+    int curentEar=-1;
+    double currentFreq = 1;
+    float curentVolumeLevel = 0;
 
     public Exam(String _name, int _age) {
         age = _age;
         setUpLimitRange();
         setDownLimitRange();
 
-        leftEar = new XYSeries("Lewe Ucho");
-        rightEar = new XYSeries("Prawe Ucho");
+        leftEar = new XYSeries("Lewe ucho");
+        rightEar = new XYSeries("Prawe ucho");
 
         name = _name;
-//        leftEar.add(100, 50);
-//        leftEar.add(200, 100);
-//
-//        rightEar.add(100, 60);
-//        rightEar.add(200, 110);
 
     }
 
     private float hAScale(float v) {
         float xMid = (20 + 16000) / 2;
-        return (v - xMid) * (100 - age/10) / 100 + xMid;
+        return (v - xMid) * (100 - age / 10) / 100 + xMid;
     }
 
     private float vAScale(float v) {
         float yMid = (0 + 150) / 2;
-        return (v - yMid) * (100 - age/10) / 100 + yMid;
+        return (v - yMid) * (100 - age / 10) / 100 + yMid;
     }
 
     public void setUpLimitRange() {
@@ -125,4 +124,65 @@ public class Exam {
         this.age = age;
     }
 
+    public double getCurrentFreq() {
+        return currentFreq;
+    }
+
+    public void setCurrentFreq(double currentFreq) {
+        this.currentFreq = currentFreq;
+    }
+
+    public float getCurentVolumeLevel() {
+        return curentVolumeLevel;
+    }
+
+    public void setCurentVolumeLevel(float curentVolumeLevel) {
+        this.curentVolumeLevel = curentVolumeLevel;
+    }
+
+    public void addLeftEarValue(float x, float y) {
+        leftEar.add(x, y);
+    }
+
+    public void addRightEarValue(float x, float y) {
+        rightEar.add(x, y);
+    }
+    public void clearRightEarValue() {
+        rightEar=new XYSeries("Prawe ucho");
+    }
+    public void clearLeftEarValue() {
+        leftEar=new XYSeries("Lewe ucho");
+    }
+    public void incFrequency(){
+        this.currentFreq=this.currentFreq+100;
+        if (currentFreq>16000){
+            currentFreq=16000;
+        }
+    }
+    public void incVolume(){
+        this.curentVolumeLevel=this.curentVolumeLevel+10;
+        if (curentVolumeLevel>100){
+            curentVolumeLevel=100;
+        }
+    }
+
+    public boolean isComleted() {
+        return comleted;
+    }
+
+    public void setComleted(boolean comleted) {
+        this.comleted = comleted;
+    }
+
+    public int getCurentEar() {
+        return curentEar;
+    }
+
+    public void setCurentEar(int curentEar) {
+        this.curentEar = curentEar;
+    }
+    
+    public void changeEar(){
+         this.curentEar= this.curentEar*-1;
+    }
 }

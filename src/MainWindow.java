@@ -28,7 +28,9 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
         initLabels();
         soundMaker = new SoundMaker();
-        exam = new Exam("Badanie",this.sldAge.getValue());
+        soundMaker.setfFreq(this.sldFrequency.getValue());
+        soundMaker.setVolumeLevel(this.sldVolume.getValue());
+        exam = new Exam("Badanie", this.sldAge.getValue());
         drawChart();
     }
     SoundMaker soundMaker;
@@ -47,10 +49,19 @@ public class MainWindow extends javax.swing.JFrame {
         pnlChart = new javax.swing.JPanel();
         tpnOptions = new javax.swing.JTabbedPane();
         pnlExam = new javax.swing.JPanel();
-        btnChart = new javax.swing.JButton();
+        sldFrequency = new javax.swing.JSlider();
+        btnBeginExam = new javax.swing.JButton();
+        lblFreq = new javax.swing.JLabel();
+        btnConfirm = new javax.swing.JButton();
+        sldVolume = new javax.swing.JSlider();
+        lblVolume = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        lblEarInfo = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        txtExamName = new javax.swing.JTextField();
+        btnConfirm1 = new javax.swing.JButton();
         lblAge = new javax.swing.JLabel();
         sldAge = new javax.swing.JSlider();
-        jProgressBar1 = new javax.swing.JProgressBar();
         cobGender = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
 
@@ -73,17 +84,81 @@ public class MainWindow extends javax.swing.JFrame {
         pnlChart.setLayout(pnlChartLayout);
         pnlChartLayout.setHorizontalGroup(
             pnlChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 672, Short.MAX_VALUE)
         );
         pnlChartLayout.setVerticalGroup(
             pnlChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        btnChart.setText("jButton1");
-        btnChart.addActionListener(new java.awt.event.ActionListener() {
+        sldFrequency.setMaximum(16000);
+        sldFrequency.setMinimum(1);
+        sldFrequency.setMinorTickSpacing(100);
+        sldFrequency.setOrientation(javax.swing.JSlider.VERTICAL);
+        sldFrequency.setPaintTicks(true);
+        sldFrequency.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sldFrequencyStateChanged(evt);
+            }
+        });
+
+        btnBeginExam.setText("Rozpocznij badanie");
+        btnBeginExam.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnChartActionPerformed(evt);
+                btnBeginExamActionPerformed(evt);
+            }
+        });
+
+        lblFreq.setText("lblFreq");
+
+        btnConfirm.setText("Słysze");
+        btnConfirm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmActionPerformed(evt);
+            }
+        });
+
+        sldVolume.setMinorTickSpacing(1);
+        sldVolume.setOrientation(javax.swing.JSlider.VERTICAL);
+        sldVolume.setPaintTicks(true);
+        sldVolume.setToolTipText("");
+        sldVolume.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sldVolumeStateChanged(evt);
+            }
+        });
+
+        lblVolume.setText("jLabel2");
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("info"));
+
+        lblEarInfo.setText("Badane ucho:");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblEarInfo, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblEarInfo)
+                .addContainerGap(70, Short.MAX_VALUE))
+        );
+
+        jLabel2.setText("Nazwa badania:");
+
+        txtExamName.setText("Badanie");
+
+        btnConfirm1.setText("Nie słysze");
+        btnConfirm1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirm1ActionPerformed(evt);
             }
         });
 
@@ -93,14 +168,60 @@ public class MainWindow extends javax.swing.JFrame {
             pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlExamLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnChart, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+                .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlExamLayout.createSequentialGroup()
+                        .addComponent(sldFrequency, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlExamLayout.createSequentialGroup()
+                                .addComponent(sldVolume, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(pnlExamLayout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addComponent(txtExamName)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlExamLayout.createSequentialGroup()
+                                .addGap(0, 12, Short.MAX_VALUE)
+                                .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnBeginExam, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(pnlExamLayout.createSequentialGroup()
+                                        .addComponent(btnConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnConfirm1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                    .addGroup(pnlExamLayout.createSequentialGroup()
+                        .addComponent(lblFreq)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblVolume)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         pnlExamLayout.setVerticalGroup(
             pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlExamLayout.createSequentialGroup()
-                .addContainerGap(399, Short.MAX_VALUE)
-                .addComponent(btnChart)
+            .addGroup(pnlExamLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblFreq)
+                    .addComponent(lblVolume))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlExamLayout.createSequentialGroup()
+                        .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(sldVolume, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(pnlExamLayout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtExamName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnConfirm1, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnBeginExam))
+                    .addComponent(sldFrequency, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -131,10 +252,9 @@ public class MainWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblAge, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
+                            .addComponent(lblAge, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addGap(0, 0, Short.MAX_VALUE)))
@@ -160,10 +280,7 @@ public class MainWindow extends javax.swing.JFrame {
                             .addComponent(cobGender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pnlChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(7, 7, 7))
+                        .addComponent(pnlChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(tpnOptions))
                 .addContainerGap())
         );
@@ -172,16 +289,17 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     private void initLabels() {
         this.lblAge.setText("Wiek: " + Integer.toString(this.sldAge.getValue()));
+        this.lblFreq.setText(Integer.toString(this.sldFrequency.getValue()));
+        this.lblVolume.setText(Integer.toString(this.sldVolume.getValue()));
     }
 
     private void drawChart() {
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(exam.getDownLimitRange());
         dataset.addSeries(exam.getUpLimitRange());
-        
+
         dataset.addSeries(exam.getLeftEar());
         dataset.addSeries(exam.getRightEar());
-        
 
         //Tworzymy wykres XY
         JFreeChart chart = ChartFactory.createXYLineChart(
@@ -211,15 +329,11 @@ public class MainWindow extends javax.swing.JFrame {
         xyplot.setDomainGridlinePaint(Color.white);
         xyplot.setRangeGridlinePaint(Color.white);
         xyplot.setAxisOffset(new RectangleInsets(5D, 5D, 5D, 5D));
-        
+
         NumberAxis domainAxis = new LogarithmicAxis("Log(y)");
         NumberAxis rangeAxis = new NumberAxis("x");
         xyplot.setDomainAxis(domainAxis);
         xyplot.setRangeAxis(rangeAxis);
-        //DateAxis dateaxis = new DateAxis("Time");
-        //dateaxis.setLowerMargin(0.0D);
-       // dateaxis.setUpperMargin(0.0D);
-       // xyplot.setDomainAxis(dateaxis);
         xyplot.setForegroundAlpha(0.5F);
 
         pnlChart.setLayout(new java.awt.BorderLayout());
@@ -227,15 +341,19 @@ public class MainWindow extends javax.swing.JFrame {
 
         pnlChart.validate();
     }
-    private void btnChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChartActionPerformed
-        try {
-            soundMaker.play();
-        } catch (LineUnavailableException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+    private void btnBeginExamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBeginExamActionPerformed
+        exam = new Exam(this.txtExamName.getText(), this.sldAge.getValue());
+        while (exam.isComleted()) {
+            try {
+                soundMaker.setVolumeLevel(exam.getCurentVolumeLevel());
+                soundMaker.setfFreq(exam.getCurrentFreq());
+                soundMaker.play();
+            } catch (LineUnavailableException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
-
-    }//GEN-LAST:event_btnChartActionPerformed
+    }//GEN-LAST:event_btnBeginExamActionPerformed
 
     private void sldAgeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldAgeStateChanged
         this.lblAge.setText("Wiek: " + Integer.toString(this.sldAge.getValue()));
@@ -243,6 +361,28 @@ public class MainWindow extends javax.swing.JFrame {
         exam.setUpLimitRange();
         exam.setDownLimitRange();
     }//GEN-LAST:event_sldAgeStateChanged
+
+    private void sldFrequencyStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldFrequencyStateChanged
+        this.lblFreq.setText(Integer.toString(this.sldFrequency.getValue()));
+        if (soundMaker != null) {
+            soundMaker.setfFreq(this.sldFrequency.getValue());
+        }
+    }//GEN-LAST:event_sldFrequencyStateChanged
+
+    private void sldVolumeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldVolumeStateChanged
+        this.lblVolume.setText(Integer.toString(this.sldVolume.getValue()));
+        if (soundMaker != null) {
+            soundMaker.setVolumeLevel(this.sldVolume.getValue());
+        }
+    }//GEN-LAST:event_sldVolumeStateChanged
+
+    private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
+        
+    }//GEN-LAST:event_btnConfirmActionPerformed
+
+    private void btnConfirm1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirm1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnConfirm1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -281,15 +421,24 @@ public class MainWindow extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnChart;
+    private javax.swing.JButton btnBeginExam;
+    private javax.swing.JButton btnConfirm;
+    private javax.swing.JButton btnConfirm1;
     private javax.swing.JComboBox cobGender;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblAge;
+    private javax.swing.JLabel lblEarInfo;
+    private javax.swing.JLabel lblFreq;
+    private javax.swing.JLabel lblVolume;
     private javax.swing.JPanel pnlChart;
     private javax.swing.JPanel pnlExam;
     private javax.swing.JSlider sldAge;
+    private javax.swing.JSlider sldFrequency;
+    private javax.swing.JSlider sldVolume;
     private javax.swing.JTabbedPane tpnOptions;
+    private javax.swing.JTextField txtExamName;
     // End of variables declaration//GEN-END:variables
 }
