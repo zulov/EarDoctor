@@ -153,7 +153,7 @@
                                           <Group type="102" alignment="0" attributes="0">
                                               <Component id="btnConfirm" min="-2" pref="84" max="-2" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="btnConfirm1" min="-2" pref="80" max="-2" attributes="0"/>
+                                              <Component id="btnRefuse" min="-2" pref="80" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -194,7 +194,7 @@
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="btnConfirm" alignment="3" min="-2" pref="58" max="-2" attributes="0"/>
-                                  <Component id="btnConfirm1" alignment="3" min="-2" pref="58" max="-2" attributes="0"/>
+                                  <Component id="btnRefuse" alignment="3" min="-2" pref="58" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="btnBeginExam" min="-2" max="-2" attributes="0"/>
@@ -303,12 +303,12 @@
                 <Property name="text" type="java.lang.String" value="Badanie"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="btnConfirm1">
+            <Component class="javax.swing.JButton" name="btnRefuse">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Nie s&#x142;ysze"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnConfirm1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRefuseActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

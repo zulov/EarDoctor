@@ -11,9 +11,12 @@ public class Exam {
     XYSeries upLimitRange;
     XYSeries downLimitRange;
     String name;
-    boolean comleted=false;
+    boolean comleted = false;
+    boolean leftEarComleted = false;
+    boolean rightEarComleted = false;
+
     int age;
-    int curentEar=-1;
+    int curentEar = -1;
     double currentFreq = 1;
     float curentVolumeLevel = 0;
 
@@ -140,29 +143,41 @@ public class Exam {
         this.curentVolumeLevel = curentVolumeLevel;
     }
 
-    public void addLeftEarValue(float x, float y) {
+    public void addLeftEarValue(double x, float y) {
         leftEar.add(x, y);
     }
 
-    public void addRightEarValue(float x, float y) {
+    public void addRightEarValue(double x, float y) {
         rightEar.add(x, y);
     }
+
     public void clearRightEarValue() {
-        rightEar=new XYSeries("Prawe ucho");
+        rightEar = new XYSeries("Prawe ucho");
     }
+
     public void clearLeftEarValue() {
-        leftEar=new XYSeries("Lewe ucho");
+        leftEar = new XYSeries("Lewe ucho");
     }
-    public void incFrequency(){
-        this.currentFreq=this.currentFreq+100;
-        if (currentFreq>16000){
-            currentFreq=16000;
+
+    public void incFrequency() {
+        this.currentFreq = this.currentFreq *2;
+        if (currentFreq > 16000) {
+            if (this.curentEar == -1) {
+                this.curentEar = 1;
+                this.leftEarComleted = true;
+            } else if (this.curentEar == 1) {
+                this.rightEarComleted = true;
+                this.comleted = true;
+            }
+            currentFreq = 1;
         }
     }
-    public void incVolume(){
-        this.curentVolumeLevel=this.curentVolumeLevel+10;
-        if (curentVolumeLevel>100){
-            curentVolumeLevel=100;
+
+    public void incVolume() {
+        this.curentVolumeLevel = this.curentVolumeLevel + 10;
+        if (curentVolumeLevel > 100) {
+            curentVolumeLevel = 0;
+            incFrequency();
         }
     }
 
@@ -181,8 +196,25 @@ public class Exam {
     public void setCurentEar(int curentEar) {
         this.curentEar = curentEar;
     }
-    
-    public void changeEar(){
-         this.curentEar= this.curentEar*-1;
+
+    public void changeEar() {
+        this.curentEar = this.curentEar * -1;
     }
+
+    public boolean isLeftEarComleted() {
+        return leftEarComleted;
+    }
+
+    public void setLeftEarComleted(boolean leftEarComleted) {
+        this.leftEarComleted = leftEarComleted;
+    }
+
+    public boolean isRightEarComleted() {
+        return rightEarComleted;
+    }
+
+    public void setRightEarComleted(boolean rightEarComleted) {
+        this.rightEarComleted = rightEarComleted;
+    }
+
 }

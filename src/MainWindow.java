@@ -59,7 +59,7 @@ public class MainWindow extends javax.swing.JFrame {
         lblEarInfo = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txtExamName = new javax.swing.JTextField();
-        btnConfirm1 = new javax.swing.JButton();
+        btnRefuse = new javax.swing.JButton();
         lblAge = new javax.swing.JLabel();
         sldAge = new javax.swing.JSlider();
         cobGender = new javax.swing.JComboBox();
@@ -155,10 +155,10 @@ public class MainWindow extends javax.swing.JFrame {
 
         txtExamName.setText("Badanie");
 
-        btnConfirm1.setText("Nie słysze");
-        btnConfirm1.addActionListener(new java.awt.event.ActionListener() {
+        btnRefuse.setText("Nie słysze");
+        btnRefuse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConfirm1ActionPerformed(evt);
+                btnRefuseActionPerformed(evt);
             }
         });
 
@@ -189,7 +189,7 @@ public class MainWindow extends javax.swing.JFrame {
                                     .addGroup(pnlExamLayout.createSequentialGroup()
                                         .addComponent(btnConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnConfirm1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                        .addComponent(btnRefuse, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                     .addGroup(pnlExamLayout.createSequentialGroup()
                         .addComponent(lblFreq)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -218,7 +218,7 @@ public class MainWindow extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnConfirm1, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnRefuse, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnBeginExam))
                     .addComponent(sldFrequency, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -341,18 +341,21 @@ public class MainWindow extends javax.swing.JFrame {
 
         pnlChart.validate();
     }
-    private void btnBeginExamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBeginExamActionPerformed
-        exam = new Exam(this.txtExamName.getText(), this.sldAge.getValue());
-        while (exam.isComleted()) {
-            try {
+    private void nextStep(){
+        try {
                 soundMaker.setVolumeLevel(exam.getCurentVolumeLevel());
                 soundMaker.setfFreq(exam.getCurrentFreq());
                 soundMaker.play();
             } catch (LineUnavailableException ex) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
-
+    }
+    private void btnBeginExamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBeginExamActionPerformed
+       // exam = new Exam(this.txtExamName.getText(), this.sldAge.getValue());
+        this.sldVolume.setValue((int)exam.getCurentVolumeLevel());
+        this.sldFrequency.setValue((int)exam.getCurrentFreq());
+        
+        nextStep();
     }//GEN-LAST:event_btnBeginExamActionPerformed
 
     private void sldAgeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldAgeStateChanged
@@ -377,12 +380,27 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_sldVolumeStateChanged
 
     private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
-        
+        if (exam.getCurentEar() == -1) {
+            exam.addLeftEarValue(exam.getCurrentFreq(), exam.getCurentVolumeLevel());
+        } else if (exam.getCurentEar() == 1) {
+            exam.addRightEarValue(exam.getCurrentFreq(), exam.getCurentVolumeLevel());
+        } else {
+            exam.addRightEarValue(exam.getCurrentFreq(), exam.getCurentVolumeLevel());
+            exam.addLeftEarValue(exam.getCurrentFreq(), exam.getCurentVolumeLevel());
+        }
+        exam.incFrequency();
+        exam.setCurentVolumeLevel(0);
+        this.sldVolume.setValue((int)exam.getCurentVolumeLevel());
+        this.sldFrequency.setValue((int)exam.getCurrentFreq());
+        nextStep();
     }//GEN-LAST:event_btnConfirmActionPerformed
 
-    private void btnConfirm1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirm1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnConfirm1ActionPerformed
+    private void btnRefuseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefuseActionPerformed
+        exam.incVolume();
+        this.sldVolume.setValue((int)exam.getCurentVolumeLevel());
+        this.sldFrequency.setValue((int)exam.getCurrentFreq());
+        nextStep();
+    }//GEN-LAST:event_btnRefuseActionPerformed
 
     /**
      * @param args the command line arguments
@@ -423,7 +441,7 @@ public class MainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBeginExam;
     private javax.swing.JButton btnConfirm;
-    private javax.swing.JButton btnConfirm1;
+    private javax.swing.JButton btnRefuse;
     private javax.swing.JComboBox cobGender;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

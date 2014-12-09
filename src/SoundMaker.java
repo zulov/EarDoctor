@@ -107,7 +107,7 @@ public class SoundMaker {
     }
 
     public float getVolumeLevel() {
-        return volumeLevel;
+        return (volumeLevel+80)*100/86;
     }
 
     public void setVolumeLevel(float volumeLevel) {
