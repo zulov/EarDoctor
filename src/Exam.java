@@ -17,7 +17,7 @@ public class Exam {
 
     int age;
     int curentEar = -1;
-    double currentFreq = 1;
+    double currentFreq = 8;
     float curentVolumeLevel = 0;
 
     public Exam(String _name, int _age) {
@@ -169,7 +169,7 @@ public class Exam {
                 this.rightEarComleted = true;
                 this.comleted = true;
             }
-            currentFreq = 1;
+            currentFreq = 8;
         }
     }
 

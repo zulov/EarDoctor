@@ -149,11 +149,14 @@
                                       <EmptySpace min="0" pref="12" max="32767" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-                                          <Component id="btnBeginExam" min="-2" pref="163" max="-2" attributes="0"/>
                                           <Group type="102" alignment="0" attributes="0">
                                               <Component id="btnConfirm" min="-2" pref="84" max="-2" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
                                               <Component id="btnRefuse" min="-2" pref="80" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                              <Component id="btnRepeat" alignment="0" max="32767" attributes="0"/>
+                                              <Component id="btnBeginExam" alignment="0" pref="163" max="32767" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -190,12 +193,14 @@
                                   </Group>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jPanel2" max="32767" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="btnConfirm" alignment="3" min="-2" pref="58" max="-2" attributes="0"/>
                                   <Component id="btnRefuse" alignment="3" min="-2" pref="58" max="-2" attributes="0"/>
                               </Group>
+                              <EmptySpace pref="10" max="32767" attributes="0"/>
+                              <Component id="btnRepeat" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="btnBeginExam" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -280,7 +285,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="lblEarInfo" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="70" max="32767" attributes="0"/>
+                          <EmptySpace pref="30" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -288,7 +293,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="lblEarInfo">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Badane ucho:"/>
+                    <Property name="text" type="java.lang.String" value="Badane ucho: Lewe"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -309,6 +314,14 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRefuseActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnRepeat">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Powt&#xf3;rz"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRepeatActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

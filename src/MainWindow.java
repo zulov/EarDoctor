@@ -1,4 +1,5 @@
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.logging.Level;
@@ -60,6 +61,7 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         txtExamName = new javax.swing.JTextField();
         btnRefuse = new javax.swing.JButton();
+        btnRepeat = new javax.swing.JButton();
         lblAge = new javax.swing.JLabel();
         sldAge = new javax.swing.JSlider();
         cobGender = new javax.swing.JComboBox();
@@ -132,7 +134,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("info"));
 
-        lblEarInfo.setText("Badane ucho:");
+        lblEarInfo.setText("Badane ucho: Lewe");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -148,7 +150,7 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblEarInfo)
-                .addContainerGap(70, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         jLabel2.setText("Nazwa badania:");
@@ -159,6 +161,13 @@ public class MainWindow extends javax.swing.JFrame {
         btnRefuse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRefuseActionPerformed(evt);
+            }
+        });
+
+        btnRepeat.setText("Powtórz");
+        btnRepeat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRepeatActionPerformed(evt);
             }
         });
 
@@ -185,11 +194,13 @@ public class MainWindow extends javax.swing.JFrame {
                                 .addGap(0, 12, Short.MAX_VALUE)
                                 .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnBeginExam, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(pnlExamLayout.createSequentialGroup()
                                         .addComponent(btnConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnRefuse, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                        .addComponent(btnRefuse, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(btnRepeat, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnBeginExam, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE))))))
                     .addGroup(pnlExamLayout.createSequentialGroup()
                         .addComponent(lblFreq)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -214,11 +225,13 @@ public class MainWindow extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtExamName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnRefuse, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                        .addComponent(btnRepeat)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnBeginExam))
                     .addComponent(sldFrequency, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -329,7 +342,12 @@ public class MainWindow extends javax.swing.JFrame {
         xyplot.setDomainGridlinePaint(Color.white);
         xyplot.setRangeGridlinePaint(Color.white);
         xyplot.setAxisOffset(new RectangleInsets(5D, 5D, 5D, 5D));
-
+        
+        xyplot.getRenderer().setSeriesStroke(0, new BasicStroke(3.0f));
+        xyplot.getRenderer().setSeriesStroke(1, new BasicStroke(3.0f));
+        xyplot.getRenderer().setSeriesStroke(2, new BasicStroke(5.0f));
+        xyplot.getRenderer().setSeriesStroke(3, new BasicStroke(5.0f));
+    
         NumberAxis domainAxis = new LogarithmicAxis("Log(y)");
         NumberAxis rangeAxis = new NumberAxis("x");
         xyplot.setDomainAxis(domainAxis);
@@ -382,8 +400,10 @@ public class MainWindow extends javax.swing.JFrame {
     private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
         if (exam.getCurentEar() == -1) {
             exam.addLeftEarValue(exam.getCurrentFreq(), exam.getCurentVolumeLevel());
+            lblEarInfo.setText("Badane ucho: Lewe");
         } else if (exam.getCurentEar() == 1) {
             exam.addRightEarValue(exam.getCurrentFreq(), exam.getCurentVolumeLevel());
+            lblEarInfo.setText("Badane ucho: Prawe");
         } else {
             exam.addRightEarValue(exam.getCurrentFreq(), exam.getCurentVolumeLevel());
             exam.addLeftEarValue(exam.getCurrentFreq(), exam.getCurentVolumeLevel());
@@ -392,6 +412,7 @@ public class MainWindow extends javax.swing.JFrame {
         exam.setCurentVolumeLevel(0);
         this.sldVolume.setValue((int)exam.getCurentVolumeLevel());
         this.sldFrequency.setValue((int)exam.getCurrentFreq());
+        
         nextStep();
     }//GEN-LAST:event_btnConfirmActionPerformed
 
@@ -401,6 +422,10 @@ public class MainWindow extends javax.swing.JFrame {
         this.sldFrequency.setValue((int)exam.getCurrentFreq());
         nextStep();
     }//GEN-LAST:event_btnRefuseActionPerformed
+
+    private void btnRepeatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRepeatActionPerformed
+        nextStep();
+    }//GEN-LAST:event_btnRepeatActionPerformed
 
     /**
      * @param args the command line arguments
@@ -442,6 +467,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnBeginExam;
     private javax.swing.JButton btnConfirm;
     private javax.swing.JButton btnRefuse;
+    private javax.swing.JButton btnRepeat;
     private javax.swing.JComboBox cobGender;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
