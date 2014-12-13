@@ -37,6 +37,8 @@ public class MainWindow extends javax.swing.JFrame {
         soundMaker.setfFreq(this.sldFrequency.getValue());
         soundMaker.setVolumeLevel(this.sldVolume.getValue());
         exam = new Exam("Badanie", this.sldAge.getValue());
+        exam.setFreqCoef((int)this.spnFreqCoef.getValue());
+        exam.setVolCoef((int)this.spnVolCoef.getValue());
         drawChart();
     }
     SoundMaker soundMaker;
@@ -68,15 +70,18 @@ public class MainWindow extends javax.swing.JFrame {
         lblVolume = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         lblEarInfo = new javax.swing.JLabel();
+        lblExamState = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txtExamName = new javax.swing.JTextField();
         btnRefuse = new javax.swing.JButton();
         btnRepeat = new javax.swing.JButton();
         btnCalibration = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        spnFreqCoef = new javax.swing.JSpinner();
+        jLabel3 = new javax.swing.JLabel();
+        spnVolCoef = new javax.swing.JSpinner();
         lblAge = new javax.swing.JLabel();
         sldAge = new javax.swing.JSlider();
-        cobGender = new javax.swing.JComboBox();
-        jLabel1 = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -97,7 +102,6 @@ public class MainWindow extends javax.swing.JFrame {
         jDialogCalibration.setIconImage(null);
         jDialogCalibration.setMinimumSize(new java.awt.Dimension(670, 267));
         jDialogCalibration.setModal(true);
-        jDialogCalibration.setPreferredSize(new java.awt.Dimension(670, 267));
         jDialogCalibration.setResizable(false);
         jDialogCalibration.setType(java.awt.Window.Type.POPUP);
 
@@ -170,11 +174,16 @@ public class MainWindow extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        sldFrequency.setMaximum(16000);
-        sldFrequency.setMinimum(1);
+        pnlExam.setMinimumSize(new java.awt.Dimension(247, 555));
+        pnlExam.setName(""); // NOI18N
+
+        sldFrequency.setMaximum(22000);
+        sldFrequency.setMinimum(8);
         sldFrequency.setMinorTickSpacing(100);
         sldFrequency.setOrientation(javax.swing.JSlider.VERTICAL);
         sldFrequency.setPaintTicks(true);
+        sldFrequency.setToolTipText("");
+        sldFrequency.setValue(4500);
         sldFrequency.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 sldFrequencyStateChanged(evt);
@@ -192,6 +201,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         btnConfirm.setBackground(new java.awt.Color(0, 255, 0));
         btnConfirm.setText("Słyszę");
+        btnConfirm.setEnabled(false);
         btnConfirm.setMaximumSize(new java.awt.Dimension(81, 23));
         btnConfirm.setMinimumSize(new java.awt.Dimension(81, 23));
         btnConfirm.setPreferredSize(new java.awt.Dimension(81, 23));
@@ -217,21 +227,28 @@ public class MainWindow extends javax.swing.JFrame {
 
         lblEarInfo.setText("Badane ucho: Lewe");
 
+        lblExamState.setText("Badanie...");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblEarInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblEarInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(lblExamState)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblEarInfo)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblExamState)
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         jLabel2.setText("Nazwa badania:");
@@ -240,6 +257,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         btnRefuse.setBackground(new java.awt.Color(255, 0, 51));
         btnRefuse.setText("Nie słyszę");
+        btnRefuse.setEnabled(false);
         btnRefuse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRefuseActionPerformed(evt);
@@ -247,7 +265,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
 
         btnRepeat.setBackground(new java.awt.Color(255, 255, 51));
-        btnRepeat.setText("Powtórz");
+        btnRepeat.setText("Odtwórz");
         btnRepeat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRepeatActionPerformed(evt);
@@ -266,12 +284,30 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText("Mnożnik częstotliwości:");
+
+        spnFreqCoef.setValue(2);
+        spnFreqCoef.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                spnFreqCoefPropertyChange(evt);
+            }
+        });
+
+        jLabel3.setText("Skok głośności:");
+
+        spnVolCoef.setValue(10);
+        spnVolCoef.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spnVolCoefStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlExamLayout = new javax.swing.GroupLayout(pnlExam);
         pnlExam.setLayout(pnlExamLayout);
         pnlExamLayout.setHorizontalGroup(
             pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlExamLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(5, 5, 5)
                 .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlExamLayout.createSequentialGroup()
                         .addComponent(sldFrequency, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -279,26 +315,34 @@ public class MainWindow extends javax.swing.JFrame {
                         .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(pnlExamLayout.createSequentialGroup()
                                 .addComponent(sldVolume, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtExamName)
+                                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(pnlExamLayout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(spnFreqCoef, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(pnlExamLayout.createSequentialGroup()
                                         .addComponent(jLabel2)
                                         .addGap(0, 0, Short.MAX_VALUE))
-                                    .addComponent(txtExamName)))
+                                    .addGroup(pnlExamLayout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(spnVolCoef, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(pnlExamLayout.createSequentialGroup()
                                 .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(btnBeginExam, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnBeginExam, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
                                     .addComponent(btnCalibration, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlExamLayout.createSequentialGroup()
-                                        .addComponent(btnConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnRefuse))
-                                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(btnRepeat, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(0, 0, Short.MAX_VALUE))))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlExamLayout.createSequentialGroup()
+                                .addComponent(btnConfirm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnRefuse, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(pnlExamLayout.createSequentialGroup()
                         .addComponent(lblFreq)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblVolume)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -315,21 +359,28 @@ public class MainWindow extends javax.swing.JFrame {
                     .addGroup(pnlExamLayout.createSequentialGroup()
                         .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(pnlExamLayout.createSequentialGroup()
-                                .addComponent(sldVolume, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                            .addGroup(pnlExamLayout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtExamName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(44, 44, 44)))
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel1)
+                                    .addComponent(spnFreqCoef, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel3)
+                                    .addComponent(spnVolCoef, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(sldVolume, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnRefuse, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRepeat)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCalibration)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnBeginExam))
@@ -351,21 +402,6 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        cobGender.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Kobieta", "Mężczyzna" }));
-        cobGender.setSelectedIndex(1);
-        cobGender.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cobGenderMouseClicked(evt);
-            }
-        });
-        cobGender.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                cobGenderPropertyChange(evt);
-            }
-        });
-
-        jLabel1.setText("Płeć:");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -375,15 +411,9 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblAge, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cobGender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(sldAge, javax.swing.GroupLayout.PREFERRED_SIZE, 558, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(lblAge, javax.swing.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(sldAge, javax.swing.GroupLayout.PREFERRED_SIZE, 564, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(tpnOptions)
                 .addContainerGap())
@@ -394,14 +424,10 @@ public class MainWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(sldAge, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lblAge, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cobGender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblAge, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(sldAge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(pnlChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(tpnOptions))
                 .addContainerGap())
@@ -440,7 +466,7 @@ public class MainWindow extends javax.swing.JFrame {
         plot.setVisible(true);
 
         XYPlot xyplot = (XYPlot) chart.getPlot();
-        XYDifferenceRenderer xydifferencerenderer = new XYDifferenceRenderer(Color.green, Color.red, false);
+        XYDifferenceRenderer xydifferencerenderer = new XYDifferenceRenderer(Color.ORANGE, Color.ORANGE, false);
         xydifferencerenderer.setRoundXCoordinates(true);
         xyplot.setDomainCrosshairLockedOnData(true);
         xyplot.setRangeCrosshairLockedOnData(true);
@@ -457,8 +483,13 @@ public class MainWindow extends javax.swing.JFrame {
         xyplot.getRenderer().setSeriesStroke(2, new BasicStroke(5.0f));
         xyplot.getRenderer().setSeriesStroke(3, new BasicStroke(5.0f));
     
-        NumberAxis domainAxis = new LogarithmicAxis("Log(y)");
-        NumberAxis rangeAxis = new NumberAxis("x");
+        xyplot.getRenderer().setSeriesPaint(0, Color.YELLOW);
+        xyplot.getRenderer().setSeriesPaint(1, Color.RED);
+        xyplot.getRenderer().setSeriesPaint(2, Color.BLUE);
+        xyplot.getRenderer().setSeriesPaint(3, Color.CYAN);
+        
+        NumberAxis domainAxis = new LogarithmicAxis("Częstotliwość");
+        NumberAxis rangeAxis = new NumberAxis("Głośność");
         xyplot.setDomainAxis(domainAxis);
         xyplot.setRangeAxis(rangeAxis);
         xyplot.setForegroundAlpha(0.5F);
@@ -472,6 +503,16 @@ public class MainWindow extends javax.swing.JFrame {
         try {
                 soundMaker.setVolumeLevel(exam.getCurentVolumeLevel());
                 soundMaker.setfFreq(exam.getCurrentFreq());
+                soundMaker.setCurrentChanel(exam.getCurentEar());
+                soundMaker.play();
+            } catch (LineUnavailableException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }
+    private void play(){
+        try {
+                soundMaker.setVolumeLevel(this.sldVolume.getValue());
+                soundMaker.setfFreq(this.sldFrequency.getValue());
                 soundMaker.play();
             } catch (LineUnavailableException ex) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -484,26 +525,36 @@ public class MainWindow extends javax.swing.JFrame {
         exam.setDownLimitRange();
     }//GEN-LAST:event_sldAgeStateChanged
 
-    private void cobGenderPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_cobGenderPropertyChange
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cobGenderPropertyChange
-
-    private void cobGenderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cobGenderMouseClicked
-    }//GEN-LAST:event_cobGenderMouseClicked
-
     private void btnCalibrationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalibrationActionPerformed
 
     }//GEN-LAST:event_btnCalibrationActionPerformed
 
     private void btnRepeatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRepeatActionPerformed
-        nextStep();
+        if(this.btnRepeat.getText()=="Odtwórz"){
+            play();    
+        }else{
+            nextStep();
+        }
+        
     }//GEN-LAST:event_btnRepeatActionPerformed
 
     private void btnRefuseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefuseActionPerformed
         exam.incVolume();
         this.sldVolume.setValue((int)exam.getCurentVolumeLevel());
         this.sldFrequency.setValue((int)exam.getCurrentFreq());
-        nextStep();
+        if(!exam.isComleted()){
+            nextStep();
+        }else{
+            this.btnBeginExam.setText("Rozpocznij badanie");
+            this.btnRepeat.setText("Odtwórz");
+            this.sldFrequency.setEnabled(true);
+            this.sldVolume.setEnabled(true);
+            this.btnConfirm.setEnabled(false);
+            this.btnRefuse.setEnabled(false);
+            this.lblExamState.setText("Badanie skończone");
+        }
+        
+        
     }//GEN-LAST:event_btnRefuseActionPerformed
 
     private void sldVolumeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldVolumeStateChanged
@@ -525,15 +576,42 @@ public class MainWindow extends javax.swing.JFrame {
             exam.addLeftEarValue(exam.getCurrentFreq(), exam.getCurentVolumeLevel());
         }
         exam.incFrequency();
-        exam.setCurentVolumeLevel(0);
+        exam.setCurentVolumeLevel(10);
         this.sldVolume.setValue((int)exam.getCurentVolumeLevel());
         this.sldFrequency.setValue((int)exam.getCurrentFreq());
 
-        nextStep();
+        if(!exam.isComleted()){
+            nextStep();
+        }else{
+            this.btnBeginExam.setText("Rozpocznij badanie");
+            this.btnRepeat.setText("Odtwórz");
+            this.sldFrequency.setEnabled(true);
+            this.sldVolume.setEnabled(true);
+            this.btnConfirm.setEnabled(false);
+            this.btnRefuse.setEnabled(false);
+            this.lblExamState.setText("Badanie skończone");
+        }
     }//GEN-LAST:event_btnConfirmActionPerformed
 
     private void btnBeginExamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBeginExamActionPerformed
         // exam = new Exam(this.txtExamName.getText(), this.sldAge.getValue());
+        if (this.btnBeginExam.getText()=="Rozpocznij badanie"){
+            this.btnBeginExam.setText("Zakończ badanie");
+            this.btnConfirm.setEnabled(true);
+            this.btnRefuse.setEnabled(true);
+            
+            this.sldFrequency.setEnabled(false);
+            this.sldVolume.setEnabled(false);
+            this.btnRepeat.setText("Powtórz");
+            
+        }else{
+            this.btnBeginExam.setText("Rozpocznij badanie");
+            this.btnRepeat.setText("Odtwórz");
+            this.sldFrequency.setEnabled(true);
+            this.sldVolume.setEnabled(true);
+            this.btnConfirm.setEnabled(false);
+            this.btnRefuse.setEnabled(false);
+        }
         this.sldVolume.setValue((int)exam.getCurentVolumeLevel());
         this.sldFrequency.setValue((int)exam.getCurrentFreq());
 
@@ -563,6 +641,18 @@ public class MainWindow extends javax.swing.JFrame {
     private void jButtonCloseCalibrationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonCloseCalibrationMouseClicked
         jDialogCalibration.dispose();
     }//GEN-LAST:event_jButtonCloseCalibrationMouseClicked
+
+    private void spnFreqCoefPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_spnFreqCoefPropertyChange
+        if(exam!=null){
+            exam.setFreqCoef((int)this.spnFreqCoef.getValue());
+        }
+    }//GEN-LAST:event_spnFreqCoefPropertyChange
+
+    private void spnVolCoefStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnVolCoefStateChanged
+        if(exam!=null){
+            exam.setVolCoef((int)this.spnVolCoef.getValue());
+        }
+    }//GEN-LAST:event_spnVolCoefStateChanged
 
     /**
      * @param args the command line arguments
@@ -648,17 +738,18 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnConfirm;
     private javax.swing.JButton btnRefuse;
     private javax.swing.JButton btnRepeat;
-    private javax.swing.JComboBox cobGender;
     private javax.swing.JButton jButtonCloseCalibration;
     private javax.swing.JDialog jDialogCalibration;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JLabel lblAge;
     private javax.swing.JLabel lblEarInfo;
+    private javax.swing.JLabel lblExamState;
     private javax.swing.JLabel lblFreq;
     private javax.swing.JLabel lblVolume;
     private javax.swing.JPanel pnlChart;
@@ -666,6 +757,8 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JSlider sldAge;
     private javax.swing.JSlider sldFrequency;
     private javax.swing.JSlider sldVolume;
+    private javax.swing.JSpinner spnFreqCoef;
+    private javax.swing.JSpinner spnVolCoef;
     private javax.swing.JTabbedPane tpnOptions;
     private javax.swing.JTextField txtExamName;
     // End of variables declaration//GEN-END:variables

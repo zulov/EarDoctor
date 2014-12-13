@@ -35,7 +35,7 @@ public class SoundMaker {
         
         volume= (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN); 
         balance= (FloatControl) line.getControl(FloatControl.Type.BALANCE); 
-        balance.setValue(-1);
+        balance.setValue(currentChanel);
         volume.setValue(volumeLevel);
         line.start();
         // Make our buffer size match audio system's buffer

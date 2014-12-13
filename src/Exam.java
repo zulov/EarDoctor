@@ -14,11 +14,12 @@ public class Exam {
     boolean comleted = false;
     boolean leftEarComleted = false;
     boolean rightEarComleted = false;
-
+    int freqCoef=2;
+    int volCoef=10;
     int age;
     int curentEar = -1;
-    double currentFreq = 8;
-    float curentVolumeLevel = 0;
+    double currentFreq = 16;
+    float curentVolumeLevel = 5;
 
     public Exam(String _name, int _age) {
         age = _age;
@@ -57,12 +58,11 @@ public class Exam {
 
     public void setUpLimitRange() {
         if (upLimitRange == null) {
-            upLimitRange = new XYSeries("Górna granica");
+            upLimitRange = new XYSeries("Granica bólu");
         } else {
             upLimitRange.clear();
         }
 
-        
         upLimitRange.add(hAScale(16), vAScale(115));
         upLimitRange.add(hAScale(20), vAScale(140));
         upLimitRange.add(hAScale(25), vAScale(147));
@@ -85,7 +85,7 @@ public class Exam {
 
     public void setDownLimitRange() {
         if (downLimitRange == null) {
-            downLimitRange = new XYSeries("Granica bólu");
+            downLimitRange = new XYSeries("Granica słyszalności");
         } else {
             downLimitRange.clear();
         }
@@ -190,8 +190,8 @@ public class Exam {
     }
 
     public void incFrequency() {
-        this.currentFreq = this.currentFreq *2;
-        if (currentFreq > 16000) {
+        this.currentFreq = this.currentFreq *freqCoef;
+        if (currentFreq > 20000) {
             if (this.curentEar == -1) {
                 this.curentEar = 1;
                 this.leftEarComleted = true;
@@ -199,14 +199,14 @@ public class Exam {
                 this.rightEarComleted = true;
                 this.comleted = true;
             }
-            currentFreq = 8;
+            currentFreq = 16;
         }
     }
 
     public void incVolume() {
-        this.curentVolumeLevel = this.curentVolumeLevel + 10;
+        this.curentVolumeLevel = this.curentVolumeLevel + volCoef;
         if (curentVolumeLevel > 100) {
-            curentVolumeLevel = 0;
+            curentVolumeLevel = 5;
             incFrequency();
         }
     }
@@ -245,6 +245,22 @@ public class Exam {
 
     public void setRightEarComleted(boolean rightEarComleted) {
         this.rightEarComleted = rightEarComleted;
+    }
+
+    public int getFreqCoef() {
+        return freqCoef;
+    }
+
+    public void setFreqCoef(int freqCoef) {
+        this.freqCoef = freqCoef;
+    }
+
+    public int getVolCoef() {
+        return volCoef;
+    }
+
+    public void setVolCoef(int volCoef) {
+        this.volCoef = volCoef;
     }
 
 }
