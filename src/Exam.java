@@ -33,13 +33,26 @@ public class Exam {
     }
 
     private float hAScale(float v) {
-        float xMid = (20 + 16000) / 2;
-        return (v - xMid) * (100 - age / 10) / 100 + xMid;
+        float coef;
+        float xMid=4500;
+        if (age >75){
+            coef=75;
+        }else{
+            coef=age;
+        }
+        if (v>4500){
+            float max=8000+14000*(75-coef)/75;
+            return (max*(v-4500))/15500+4500;
+        }else{
+            float min=84*(1+(coef-75)/75);
+            return ((4500-min)*(v-4500))/4500+4500;
+        }
+        
     }
 
     private float vAScale(float v) {
         float yMid = (0 + 150) / 2;
-        return (v - yMid) * (100 - age / 10) / 100 + yMid;
+        return (v - yMid) * (100 - age / (float)5) / 100 + yMid;
     }
 
     public void setUpLimitRange() {
@@ -48,35 +61,52 @@ public class Exam {
         } else {
             upLimitRange.clear();
         }
-        upLimitRange.add(hAScale(20), vAScale(120));
-        upLimitRange.add(hAScale(30), vAScale(140));
+
+        
+        upLimitRange.add(hAScale(16), vAScale(115));
+        upLimitRange.add(hAScale(20), vAScale(140));
+        upLimitRange.add(hAScale(25), vAScale(147));
         upLimitRange.add(hAScale(50), vAScale(130));
         upLimitRange.add(hAScale(100), vAScale(125));
         upLimitRange.add(hAScale(200), vAScale(120));
-        upLimitRange.add(hAScale(500), vAScale(116));
+        upLimitRange.add(hAScale(500), vAScale(117));
         upLimitRange.add(hAScale(1000), vAScale(115));
-        upLimitRange.add(hAScale(2000), vAScale(116));
-        upLimitRange.add(hAScale(5000), vAScale(105));
-        upLimitRange.add(hAScale(10000), vAScale(150));
-        upLimitRange.add(hAScale(16000), vAScale(80));
+        upLimitRange.add(hAScale(2000), vAScale(110));
+        upLimitRange.add(hAScale(3000), vAScale(108));
+        upLimitRange.add(hAScale(4500), vAScale(100));
+        upLimitRange.add(hAScale(5000), vAScale(110));
+        upLimitRange.add(hAScale(7000), vAScale(120));
+        upLimitRange.add(hAScale(9000), vAScale(125));
+        upLimitRange.add(hAScale(10000), vAScale(130));
+        upLimitRange.add(hAScale(12000), vAScale(128));
+        upLimitRange.add(hAScale(16000), vAScale(120));
+        upLimitRange.add(hAScale(20000), vAScale(80));
     }
 
     public void setDownLimitRange() {
         if (downLimitRange == null) {
-            downLimitRange = new XYSeries("Dolna granica");
+            downLimitRange = new XYSeries("Granica bólu");
         } else {
             downLimitRange.clear();
         }
-        downLimitRange.add(hAScale(20), vAScale(120));
+        downLimitRange.add(hAScale(16), vAScale(115));
+        downLimitRange.add(hAScale(20), vAScale(75));
+        downLimitRange.add(hAScale(25), vAScale(65));
         downLimitRange.add(hAScale(50), vAScale(40));
         downLimitRange.add(hAScale(100), vAScale(25));
-        downLimitRange.add(hAScale(200), vAScale(15));
+        downLimitRange.add(hAScale(200), vAScale(18));
         downLimitRange.add(hAScale(500), vAScale(10));
-        downLimitRange.add(hAScale(1000), vAScale(7));
-        downLimitRange.add(hAScale(2000), vAScale(6));
-        downLimitRange.add(hAScale(5000), vAScale(2));
-        downLimitRange.add(hAScale(10000), vAScale(20));
-        downLimitRange.add(hAScale(16000), vAScale(80));
+        downLimitRange.add(hAScale(1000), vAScale(8));
+        downLimitRange.add(hAScale(2000), vAScale(5));
+        downLimitRange.add(hAScale(3000), vAScale(3));
+        downLimitRange.add(hAScale(4500), vAScale(2));
+        downLimitRange.add(hAScale(5000), vAScale(5));
+        downLimitRange.add(hAScale(7000), vAScale(18));
+        downLimitRange.add(hAScale(9000), vAScale(20));
+        downLimitRange.add(hAScale(10000), vAScale(18));
+        downLimitRange.add(hAScale(12000), vAScale(17));
+        downLimitRange.add(hAScale(16000), vAScale(30));
+        downLimitRange.add(hAScale(20000), vAScale(80));
     }
 
     public XYSeries getLeftEar() {

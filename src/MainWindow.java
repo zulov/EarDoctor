@@ -2,6 +2,7 @@
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jfree.chart.ChartFactory;
@@ -10,11 +11,15 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeriesCollection;
 import javax.sound.sampled.*;
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
 import org.jfree.chart.axis.LogarithmicAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYDifferenceRenderer;
 import org.jfree.ui.RectangleInsets;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 /**
  *
@@ -47,6 +52,11 @@ public class MainWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jDialogCalibration = new javax.swing.JDialog();
+        btmPlayHands = new javax.swing.JButton();
+        jButtonCloseCalibration = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         pnlChart = new javax.swing.JPanel();
         tpnOptions = new javax.swing.JTabbedPane();
         pnlExam = new javax.swing.JPanel();
@@ -62,6 +72,7 @@ public class MainWindow extends javax.swing.JFrame {
         txtExamName = new javax.swing.JTextField();
         btnRefuse = new javax.swing.JButton();
         btnRepeat = new javax.swing.JButton();
+        btnCalibration = new javax.swing.JButton();
         lblAge = new javax.swing.JLabel();
         sldAge = new javax.swing.JSlider();
         cobGender = new javax.swing.JComboBox();
@@ -78,6 +89,72 @@ public class MainWindow extends javax.swing.JFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
+        jDialogCalibration.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        jDialogCalibration.setTitle("Kalibracja głośności");
+        jDialogCalibration.setAlwaysOnTop(true);
+        jDialogCalibration.setBounds(new java.awt.Rectangle(0, 0, 0, 0));
+        jDialogCalibration.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jDialogCalibration.setIconImage(null);
+        jDialogCalibration.setMinimumSize(new java.awt.Dimension(670, 267));
+        jDialogCalibration.setModal(true);
+        jDialogCalibration.setPreferredSize(new java.awt.Dimension(670, 267));
+        jDialogCalibration.setResizable(false);
+        jDialogCalibration.setType(java.awt.Window.Type.POPUP);
+
+        btmPlayHands.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btmPlayHands.setText("Odtwórz dźwięk");
+        btmPlayHands.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btmPlayHandsMouseClicked(evt);
+            }
+        });
+        btmPlayHands.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btmPlayHandsActionPerformed(evt);
+            }
+        });
+
+        jButtonCloseCalibration.setText("OK, gotowe");
+        jButtonCloseCalibration.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonCloseCalibrationMouseClicked(evt);
+            }
+        });
+
+        jTextArea1.setEditable(false);
+        jTextArea1.setColumns(20);
+        jTextArea1.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        jTextArea1.setRows(5);
+        jTextArea1.setText("Do przeprowadzenia badania wymagana jest kalibracja głośności.\nJak to zrobić?\n1. Potrzyj dłońmi zaraz przed nosem.\n   (W ten sposób otrzymasz dźwięk referencyjny o natężeniu ~65dB)\n2. Załóż słuchawki i naciskając przycisk poniżej porównaj natężenie dźwięku.\n3. Dopasuj głośność suwakiem systemowym lub pokrętłem na słuchawkach.\n   (Tak, żeby dźwięk pocierania rąk i ten słyszany ze słuchawek miały takie samo natężenie)\n4. Procedurę możesz powtórzyć kilka razy dla uzyskania lepszego dopasowania.");
+        jTextArea1.setWrapStyleWord(true);
+        jTextArea1.setEnabled(false);
+        jTextArea1.setFocusable(false);
+        jTextArea1.setOpaque(false);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        javax.swing.GroupLayout jDialogCalibrationLayout = new javax.swing.GroupLayout(jDialogCalibration.getContentPane());
+        jDialogCalibration.getContentPane().setLayout(jDialogCalibrationLayout);
+        jDialogCalibrationLayout.setHorizontalGroup(
+            jDialogCalibrationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialogCalibrationLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jDialogCalibrationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonCloseCalibration, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btmPlayHands, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 643, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jDialogCalibrationLayout.setVerticalGroup(
+            jDialogCalibrationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialogCalibrationLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btmPlayHands, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonCloseCalibration))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         pnlChart.setBackground(new java.awt.Color(200, 200, 230));
@@ -86,7 +163,7 @@ public class MainWindow extends javax.swing.JFrame {
         pnlChart.setLayout(pnlChartLayout);
         pnlChartLayout.setHorizontalGroup(
             pnlChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 672, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         pnlChartLayout.setVerticalGroup(
             pnlChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -113,7 +190,11 @@ public class MainWindow extends javax.swing.JFrame {
 
         lblFreq.setText("lblFreq");
 
-        btnConfirm.setText("Słysze");
+        btnConfirm.setBackground(new java.awt.Color(0, 255, 0));
+        btnConfirm.setText("Słyszę");
+        btnConfirm.setMaximumSize(new java.awt.Dimension(81, 23));
+        btnConfirm.setMinimumSize(new java.awt.Dimension(81, 23));
+        btnConfirm.setPreferredSize(new java.awt.Dimension(81, 23));
         btnConfirm.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnConfirmActionPerformed(evt);
@@ -142,7 +223,7 @@ public class MainWindow extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblEarInfo, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                .addComponent(lblEarInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -150,24 +231,38 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblEarInfo)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel2.setText("Nazwa badania:");
 
         txtExamName.setText("Badanie");
 
-        btnRefuse.setText("Nie słysze");
+        btnRefuse.setBackground(new java.awt.Color(255, 0, 51));
+        btnRefuse.setText("Nie słyszę");
         btnRefuse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRefuseActionPerformed(evt);
             }
         });
 
+        btnRepeat.setBackground(new java.awt.Color(255, 255, 51));
         btnRepeat.setText("Powtórz");
         btnRepeat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRepeatActionPerformed(evt);
+            }
+        });
+
+        btnCalibration.setText("Kalibracja");
+        btnCalibration.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnCalibrationMouseClicked(evt);
+            }
+        });
+        btnCalibration.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCalibrationActionPerformed(evt);
             }
         });
 
@@ -190,17 +285,17 @@ public class MainWindow extends javax.swing.JFrame {
                                         .addComponent(jLabel2)
                                         .addGap(0, 0, Short.MAX_VALUE))
                                     .addComponent(txtExamName)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlExamLayout.createSequentialGroup()
-                                .addGap(0, 12, Short.MAX_VALUE)
-                                .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(pnlExamLayout.createSequentialGroup()
-                                        .addComponent(btnConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(pnlExamLayout.createSequentialGroup()
+                                .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(btnBeginExam, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnCalibration, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlExamLayout.createSequentialGroup()
+                                        .addComponent(btnConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnRefuse, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(btnRepeat, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(btnBeginExam, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE))))))
+                                        .addComponent(btnRefuse))
+                                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnRepeat, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(pnlExamLayout.createSequentialGroup()
                         .addComponent(lblFreq)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -219,20 +314,24 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlExamLayout.createSequentialGroup()
                         .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(sldVolume, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(pnlExamLayout.createSequentialGroup()
+                                .addComponent(sldVolume, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                             .addGroup(pnlExamLayout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtExamName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtExamName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(44, 44, 44)))
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnRefuse, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                            .addComponent(btnRefuse, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRepeat)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCalibration)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnBeginExam))
                     .addComponent(sldFrequency, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -254,6 +353,16 @@ public class MainWindow extends javax.swing.JFrame {
 
         cobGender.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Kobieta", "Mężczyzna" }));
         cobGender.setSelectedIndex(1);
+        cobGender.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cobGenderMouseClicked(evt);
+            }
+        });
+        cobGender.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                cobGenderPropertyChange(evt);
+            }
+        });
 
         jLabel1.setText("Płeć:");
 
@@ -267,7 +376,7 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(pnlChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblAge, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
+                            .addComponent(lblAge, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addGap(0, 0, Short.MAX_VALUE)))
@@ -368,14 +477,6 @@ public class MainWindow extends javax.swing.JFrame {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
     }
-    private void btnBeginExamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBeginExamActionPerformed
-       // exam = new Exam(this.txtExamName.getText(), this.sldAge.getValue());
-        this.sldVolume.setValue((int)exam.getCurentVolumeLevel());
-        this.sldFrequency.setValue((int)exam.getCurrentFreq());
-        
-        nextStep();
-    }//GEN-LAST:event_btnBeginExamActionPerformed
-
     private void sldAgeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldAgeStateChanged
         this.lblAge.setText("Wiek: " + Integer.toString(this.sldAge.getValue()));
         exam.setAge(this.sldAge.getValue());
@@ -383,12 +484,27 @@ public class MainWindow extends javax.swing.JFrame {
         exam.setDownLimitRange();
     }//GEN-LAST:event_sldAgeStateChanged
 
-    private void sldFrequencyStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldFrequencyStateChanged
-        this.lblFreq.setText(Integer.toString(this.sldFrequency.getValue()));
-        if (soundMaker != null) {
-            soundMaker.setfFreq(this.sldFrequency.getValue());
-        }
-    }//GEN-LAST:event_sldFrequencyStateChanged
+    private void cobGenderPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_cobGenderPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cobGenderPropertyChange
+
+    private void cobGenderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cobGenderMouseClicked
+    }//GEN-LAST:event_cobGenderMouseClicked
+
+    private void btnCalibrationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalibrationActionPerformed
+
+    }//GEN-LAST:event_btnCalibrationActionPerformed
+
+    private void btnRepeatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRepeatActionPerformed
+        nextStep();
+    }//GEN-LAST:event_btnRepeatActionPerformed
+
+    private void btnRefuseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefuseActionPerformed
+        exam.incVolume();
+        this.sldVolume.setValue((int)exam.getCurentVolumeLevel());
+        this.sldFrequency.setValue((int)exam.getCurrentFreq());
+        nextStep();
+    }//GEN-LAST:event_btnRefuseActionPerformed
 
     private void sldVolumeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldVolumeStateChanged
         this.lblVolume.setText(Integer.toString(this.sldVolume.getValue()));
@@ -412,20 +528,41 @@ public class MainWindow extends javax.swing.JFrame {
         exam.setCurentVolumeLevel(0);
         this.sldVolume.setValue((int)exam.getCurentVolumeLevel());
         this.sldFrequency.setValue((int)exam.getCurrentFreq());
-        
+
         nextStep();
     }//GEN-LAST:event_btnConfirmActionPerformed
 
-    private void btnRefuseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefuseActionPerformed
-        exam.incVolume();
+    private void btnBeginExamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBeginExamActionPerformed
+        // exam = new Exam(this.txtExamName.getText(), this.sldAge.getValue());
         this.sldVolume.setValue((int)exam.getCurentVolumeLevel());
         this.sldFrequency.setValue((int)exam.getCurrentFreq());
-        nextStep();
-    }//GEN-LAST:event_btnRefuseActionPerformed
 
-    private void btnRepeatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRepeatActionPerformed
         nextStep();
-    }//GEN-LAST:event_btnRepeatActionPerformed
+    }//GEN-LAST:event_btnBeginExamActionPerformed
+
+    private void sldFrequencyStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldFrequencyStateChanged
+        this.lblFreq.setText(Integer.toString(this.sldFrequency.getValue()));
+        if (soundMaker != null) {
+            soundMaker.setfFreq(this.sldFrequency.getValue());
+        }
+    }//GEN-LAST:event_sldFrequencyStateChanged
+
+    private void btnCalibrationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCalibrationMouseClicked
+        jDialogCalibration.setLocationRelativeTo(this);
+        jDialogCalibration.setVisible(true);
+    }//GEN-LAST:event_btnCalibrationMouseClicked
+
+    private void btmPlayHandsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmPlayHandsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btmPlayHandsActionPerformed
+
+    private void btmPlayHandsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btmPlayHandsMouseClicked
+        playSound();
+    }//GEN-LAST:event_btmPlayHandsMouseClicked
+
+    private void jButtonCloseCalibrationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonCloseCalibrationMouseClicked
+        jDialogCalibration.dispose();
+    }//GEN-LAST:event_jButtonCloseCalibrationMouseClicked
 
     /**
      * @param args the command line arguments
@@ -438,7 +575,7 @@ public class MainWindow extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -455,24 +592,71 @@ public class MainWindow extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MainWindow().setVisible(true);
             }
         });
     }
+    void playSound() {
+        try {
+            InputStream inputStream = getClass().getResourceAsStream("./handcalibration.wav");
+            //System.out.println("elo");
+            AudioStream audioStream = new AudioStream(inputStream);
+            AudioPlayer.player.start(audioStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    void printMixersDetails() {
+        javax.sound.sampled.Mixer.Info[] mixers = AudioSystem.getMixerInfo();
+        System.out.println("There are " + mixers.length + " mixer info objects");
+        for (int i = 0; i < mixers.length; i++) {
+            Mixer.Info mixerInfo = mixers[i];
+            System.out.println("Mixer Name:" + mixerInfo.getName());
+            Mixer mixer = AudioSystem.getMixer(mixerInfo);
+            Line.Info[] lineinfos = mixer.getTargetLineInfo();
+            for (Line.Info lineinfo : lineinfos) {
+                System.out.println("line:" + lineinfo);
+                try {
+                    Line line = mixer.getLine(lineinfo);
+                    line.open();
+                    if (line.isControlSupported(FloatControl.Type.VOLUME)) {
+                        FloatControl control = (FloatControl) line.getControl(FloatControl.Type.VOLUME);
+                        System.out.println("Volume:" + control.getValue());
+                        JProgressBar pb = new JProgressBar();
+                        control.setValue((float) 0.5);
+                        int value = (int) (control.getValue() * 100);
+                        pb.setValue(value);
+                        jDialogCalibration.add(new JLabel(lineinfo.toString()));
+                        jDialogCalibration.add(pb);
+                        jDialogCalibration.pack();
+                    }
+                } catch (LineUnavailableException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btmPlayHands;
     private javax.swing.JButton btnBeginExam;
+    private javax.swing.JButton btnCalibration;
     private javax.swing.JButton btnConfirm;
     private javax.swing.JButton btnRefuse;
     private javax.swing.JButton btnRepeat;
     private javax.swing.JComboBox cobGender;
+    private javax.swing.JButton jButtonCloseCalibration;
+    private javax.swing.JDialog jDialogCalibration;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JLabel lblAge;
     private javax.swing.JLabel lblEarInfo;
     private javax.swing.JLabel lblFreq;
