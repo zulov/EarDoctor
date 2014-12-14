@@ -35,11 +35,11 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
         initLabels();
         soundMaker = new SoundMaker();
-        soundMaker.setfFreq(this.sldFrequency.getValue());
+        soundMaker.setFreq(this.sldFrequency.getValue());
         soundMaker.setVolumeLevel(this.sldVolume.getValue());
         exam = new Exam("Badanie", this.sldAge.getValue());
-        exam.setFreqCoef((int)this.spnFreqCoef.getValue());
-        exam.setVolCoef((int)this.spnVolCoef.getValue());
+        exam.setFreqCoef((int) this.spnFreqCoef.getValue());
+        exam.setVolCoef((int) this.spnVolCoef.getValue());
         try {
             clip = AudioSystem.getClip();
         } catch (LineUnavailableException ex) {
@@ -87,7 +87,6 @@ public class MainWindow extends javax.swing.JFrame {
         spnFreqCoef = new javax.swing.JSpinner();
         jLabel3 = new javax.swing.JLabel();
         spnVolCoef = new javax.swing.JSpinner();
-        jButton1 = new javax.swing.JButton();
         lblAge = new javax.swing.JLabel();
         sldAge = new javax.swing.JSlider();
 
@@ -312,13 +311,6 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("test");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout pnlExamLayout = new javax.swing.GroupLayout(pnlExam);
         pnlExam.setLayout(pnlExamLayout);
         pnlExamLayout.setHorizontalGroup(
@@ -344,10 +336,8 @@ public class MainWindow extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(spnVolCoef, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(pnlExamLayout.createSequentialGroup()
-                                        .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jButton1)
-                                            .addComponent(jLabel1))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 5, Short.MAX_VALUE)
                                         .addComponent(spnFreqCoef, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(pnlExamLayout.createSequentialGroup()
                                 .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -391,8 +381,6 @@ public class MainWindow extends javax.swing.JFrame {
                                 .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel3)
                                     .addComponent(spnVolCoef, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(67, 67, 67)
-                                .addComponent(jButton1)
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(sldVolume, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -498,17 +486,17 @@ public class MainWindow extends javax.swing.JFrame {
         xyplot.setDomainGridlinePaint(Color.white);
         xyplot.setRangeGridlinePaint(Color.white);
         xyplot.setAxisOffset(new RectangleInsets(5D, 5D, 5D, 5D));
-        
+
         xyplot.getRenderer().setSeriesStroke(0, new BasicStroke(3.0f));
         xyplot.getRenderer().setSeriesStroke(1, new BasicStroke(3.0f));
         xyplot.getRenderer().setSeriesStroke(2, new BasicStroke(5.0f));
         xyplot.getRenderer().setSeriesStroke(3, new BasicStroke(5.0f));
-    
+
         xyplot.getRenderer().setSeriesPaint(0, Color.YELLOW);
         xyplot.getRenderer().setSeriesPaint(1, Color.RED);
         xyplot.getRenderer().setSeriesPaint(2, Color.BLUE);
         xyplot.getRenderer().setSeriesPaint(3, Color.CYAN);
-        
+
         NumberAxis domainAxis = new LogarithmicAxis("Częstotliwość");
         NumberAxis rangeAxis = new NumberAxis("Głośność");
         xyplot.setDomainAxis(domainAxis);
@@ -520,45 +508,19 @@ public class MainWindow extends javax.swing.JFrame {
 
         pnlChart.validate();
     }
-    private void nextStep(){
-//        try {
-//                soundMaker.setVolumeLevel(exam.getCurentVolumeLevel());
-//                soundMaker.setfFreq(exam.getCurrentFreq());
-//                soundMaker.setCurrentChanel(exam.getCurentEar());
-//                soundMaker.play();
-//            } catch (LineUnavailableException ex) {
-//                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-        play2(exam.curentEar==-1);
+
+    private void nextStep() {
+        soundMaker.setVolumeLevel(this.sldVolume.getValue());
+        soundMaker.setFreq(this.sldFrequency.getValue());
+        soundMaker.play(exam.curentEar == -1);
     }
-    private void play(){
-        try {
-                soundMaker.setVolumeLevel(this.sldVolume.getValue());
-                soundMaker.setfFreq(this.sldFrequency.getValue());
-                soundMaker.play();
-            } catch (LineUnavailableException ex) {
-                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }
+
+    private void play() {
+        soundMaker.setVolumeLevel(this.sldVolume.getValue());
+        soundMaker.setFreq(this.sldFrequency.getValue());
+        soundMaker.play(exam.curentEar == -1);
     }
-    private void play2(boolean leftear) {
-//        //w ten sposób się nie przycina, ale poprzednie dźwięki się nakładają
-//        try {
-//            clip = AudioSystem.getClip();
-//        } catch (LineUnavailableException ex) {
-//            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-        clip.stop();
-        clip.close();
-        try {
-            clip.open(SinusGenerator.generateSinus((float) (Math.pow(10, (this.sldVolume.getValue()-90) / 20)), this.sldFrequency.getValue(), 2, SinusGenerator.Channels.getChannels(leftear, !leftear)));
-        } catch (LineUnavailableException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        clip.start();
-    }
-    
+
     private void sldAgeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldAgeStateChanged
         this.lblAge.setText("Wiek: " + Integer.toString(this.sldAge.getValue()));
         exam.setAge(this.sldAge.getValue());
@@ -571,22 +533,23 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCalibrationActionPerformed
 
     private void btnRepeatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRepeatActionPerformed
-        if(this.btnRepeat.getText()=="Odtwórz"){
-            //play();
-            play2(exam.curentEar==-1);
-        }else{
+        if (this.btnRepeat.getText() == "Odtwórz") {
+            soundMaker.setVolumeLevel(this.sldVolume.getValue());
+            soundMaker.setFreq(this.sldFrequency.getValue());
+            soundMaker.play(exam.curentEar == -1);
+        } else {
             nextStep();
         }
-        
+
     }//GEN-LAST:event_btnRepeatActionPerformed
 
     private void btnRefuseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefuseActionPerformed
         exam.incVolume();
-        this.sldVolume.setValue((int)exam.getCurentVolumeLevel());
-        this.sldFrequency.setValue((int)exam.getCurrentFreq());
-        if(!exam.isComleted()){
+        this.sldVolume.setValue((int) exam.getCurentVolumeLevel());
+        this.sldFrequency.setValue((int) exam.getCurrentFreq());
+        if (!exam.isComleted()) {
             nextStep();
-        }else{
+        } else {
             this.btnBeginExam.setText("Rozpocznij badanie");
             this.btnRepeat.setText("Odtwórz");
             this.sldFrequency.setEnabled(true);
@@ -595,8 +558,8 @@ public class MainWindow extends javax.swing.JFrame {
             this.btnRefuse.setEnabled(false);
             this.lblExamState.setText("Badanie skończone");
         }
-        
-        
+
+
     }//GEN-LAST:event_btnRefuseActionPerformed
 
     private void sldVolumeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldVolumeStateChanged
@@ -619,12 +582,12 @@ public class MainWindow extends javax.swing.JFrame {
         }
         exam.incFrequency();
         exam.setCurentVolumeLevel(5);
-        this.sldVolume.setValue((int)exam.getCurentVolumeLevel());
-        this.sldFrequency.setValue((int)exam.getCurrentFreq());
+        this.sldVolume.setValue((int) exam.getCurentVolumeLevel());
+        this.sldFrequency.setValue((int) exam.getCurrentFreq());
 
-        if(!exam.isComleted()){
+        if (!exam.isComleted()) {
             nextStep();
-        }else{
+        } else {
             this.btnBeginExam.setText("Rozpocznij badanie");
             this.btnRepeat.setText("Odtwórz");
             this.sldFrequency.setEnabled(true);
@@ -637,16 +600,16 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void btnBeginExamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBeginExamActionPerformed
         // exam = new Exam(this.txtExamName.getText(), this.sldAge.getValue());
-        if (this.btnBeginExam.getText()=="Rozpocznij badanie"){
+        if (this.btnBeginExam.getText() == "Rozpocznij badanie") {
             this.btnBeginExam.setText("Zakończ badanie");
             this.btnConfirm.setEnabled(true);
             this.btnRefuse.setEnabled(true);
-            
+
             this.sldFrequency.setEnabled(false);
             this.sldVolume.setEnabled(false);
             this.btnRepeat.setText("Powtórz");
-            
-        }else{
+
+        } else {
             this.btnBeginExam.setText("Rozpocznij badanie");
             this.btnRepeat.setText("Odtwórz");
             this.sldFrequency.setEnabled(true);
@@ -654,8 +617,8 @@ public class MainWindow extends javax.swing.JFrame {
             this.btnConfirm.setEnabled(false);
             this.btnRefuse.setEnabled(false);
         }
-        this.sldVolume.setValue((int)exam.getCurentVolumeLevel());
-        this.sldFrequency.setValue((int)exam.getCurrentFreq());
+        this.sldVolume.setValue((int) exam.getCurentVolumeLevel());
+        this.sldFrequency.setValue((int) exam.getCurrentFreq());
 
         nextStep();
     }//GEN-LAST:event_btnBeginExamActionPerformed
@@ -663,7 +626,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void sldFrequencyStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldFrequencyStateChanged
         this.lblFreq.setText(Integer.toString(this.sldFrequency.getValue()));
         if (soundMaker != null) {
-            soundMaker.setfFreq(this.sldFrequency.getValue());
+            soundMaker.setFreq(this.sldFrequency.getValue());
         }
     }//GEN-LAST:event_sldFrequencyStateChanged
 
@@ -685,33 +648,16 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonCloseCalibrationMouseClicked
 
     private void spnFreqCoefPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_spnFreqCoefPropertyChange
-        if(exam!=null){
-            exam.setFreqCoef((int)this.spnFreqCoef.getValue());
+        if (exam != null) {
+            exam.setFreqCoef((int) this.spnFreqCoef.getValue());
         }
     }//GEN-LAST:event_spnFreqCoefPropertyChange
 
     private void spnVolCoefStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnVolCoefStateChanged
-        if(exam!=null){
-            exam.setVolCoef((int)this.spnVolCoef.getValue());
+        if (exam != null) {
+            exam.setVolCoef((int) this.spnVolCoef.getValue());
         }
     }//GEN-LAST:event_spnVolCoefStateChanged
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        float frequency = 250;
-        float duration = 5;
-        float amplitude = 0;
-        clip.stop();
-        clip.close();
-        try {
-            clip.open(SinusGenerator.generateSinus((float) (Math.pow(10,amplitude/20)), frequency, duration, SinusGenerator.Channels.getChannels(true,true)));
-        } catch (LineUnavailableException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        clip.start();
-
-    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -741,23 +687,23 @@ public class MainWindow extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MainWindow().setVisible(true);
             }
         });
     }
+
     void playSound() {
         try {
             InputStream inputStream = getClass().getResourceAsStream("./handcalibration.wav");
-            //System.out.println("elo");
             AudioStream audioStream = new AudioStream(inputStream);
             AudioPlayer.player.start(audioStream);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     void printMixersDetails() {
         javax.sound.sampled.Mixer.Info[] mixers = AudioSystem.getMixerInfo();
         System.out.println("There are " + mixers.length + " mixer info objects");
@@ -797,7 +743,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnConfirm;
     private javax.swing.JButton btnRefuse;
     private javax.swing.JButton btnRepeat;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonCloseCalibration;
     private javax.swing.JDialog jDialogCalibration;
     private javax.swing.JLabel jLabel1;
