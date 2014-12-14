@@ -2,6 +2,7 @@
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,10 +40,16 @@ public class MainWindow extends javax.swing.JFrame {
         exam = new Exam("Badanie", this.sldAge.getValue());
         exam.setFreqCoef((int)this.spnFreqCoef.getValue());
         exam.setVolCoef((int)this.spnVolCoef.getValue());
+        try {
+            clip = AudioSystem.getClip();
+        } catch (LineUnavailableException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
         drawChart();
     }
     SoundMaker soundMaker;
     Exam exam;
+    Clip clip = null;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -80,6 +87,7 @@ public class MainWindow extends javax.swing.JFrame {
         spnFreqCoef = new javax.swing.JSpinner();
         jLabel3 = new javax.swing.JLabel();
         spnVolCoef = new javax.swing.JSpinner();
+        jButton1 = new javax.swing.JButton();
         lblAge = new javax.swing.JLabel();
         sldAge = new javax.swing.JSlider();
 
@@ -177,13 +185,14 @@ public class MainWindow extends javax.swing.JFrame {
         pnlExam.setMinimumSize(new java.awt.Dimension(247, 555));
         pnlExam.setName(""); // NOI18N
 
-        sldFrequency.setMaximum(22000);
-        sldFrequency.setMinimum(8);
+        sldFrequency.setMajorTickSpacing(1000);
+        sldFrequency.setMaximum(20000);
+        sldFrequency.setMinimum(20);
         sldFrequency.setMinorTickSpacing(100);
         sldFrequency.setOrientation(javax.swing.JSlider.VERTICAL);
         sldFrequency.setPaintTicks(true);
         sldFrequency.setToolTipText("");
-        sldFrequency.setValue(4500);
+        sldFrequency.setValue(1000);
         sldFrequency.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 sldFrequencyStateChanged(evt);
@@ -211,6 +220,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        sldVolume.setMajorTickSpacing(25);
         sldVolume.setMinorTickSpacing(1);
         sldVolume.setOrientation(javax.swing.JSlider.VERTICAL);
         sldVolume.setPaintTicks(true);
@@ -302,6 +312,13 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("test");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlExamLayout = new javax.swing.GroupLayout(pnlExam);
         pnlExam.setLayout(pnlExamLayout);
         pnlExamLayout.setHorizontalGroup(
@@ -320,16 +337,18 @@ public class MainWindow extends javax.swing.JFrame {
                                     .addComponent(txtExamName)
                                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(pnlExamLayout.createSequentialGroup()
-                                        .addComponent(jLabel1)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(spnFreqCoef, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(pnlExamLayout.createSequentialGroup()
                                         .addComponent(jLabel2)
                                         .addGap(0, 0, Short.MAX_VALUE))
                                     .addGroup(pnlExamLayout.createSequentialGroup()
                                         .addComponent(jLabel3)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(spnVolCoef, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addComponent(spnVolCoef, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(pnlExamLayout.createSequentialGroup()
+                                        .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jButton1)
+                                            .addComponent(jLabel1))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(spnFreqCoef, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(pnlExamLayout.createSequentialGroup()
                                 .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(btnBeginExam, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
@@ -372,6 +391,8 @@ public class MainWindow extends javax.swing.JFrame {
                                 .addGroup(pnlExamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel3)
                                     .addComponent(spnVolCoef, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(67, 67, 67)
+                                .addComponent(jButton1)
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(sldVolume, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -411,11 +432,11 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(lblAge, javax.swing.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE)
+                        .addComponent(lblAge, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(sldAge, javax.swing.GroupLayout.PREFERRED_SIZE, 564, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(tpnOptions)
+                .addComponent(tpnOptions, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -500,14 +521,15 @@ public class MainWindow extends javax.swing.JFrame {
         pnlChart.validate();
     }
     private void nextStep(){
-        try {
-                soundMaker.setVolumeLevel(exam.getCurentVolumeLevel());
-                soundMaker.setfFreq(exam.getCurrentFreq());
-                soundMaker.setCurrentChanel(exam.getCurentEar());
-                soundMaker.play();
-            } catch (LineUnavailableException ex) {
-                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//        try {
+//                soundMaker.setVolumeLevel(exam.getCurentVolumeLevel());
+//                soundMaker.setfFreq(exam.getCurrentFreq());
+//                soundMaker.setCurrentChanel(exam.getCurentEar());
+//                soundMaker.play();
+//            } catch (LineUnavailableException ex) {
+//                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+        play2(exam.curentEar==-1);
     }
     private void play(){
         try {
@@ -518,6 +540,25 @@ public class MainWindow extends javax.swing.JFrame {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
     }
+    private void play2(boolean leftear) {
+//        //w ten sposób się nie przycina, ale poprzednie dźwięki się nakładają
+//        try {
+//            clip = AudioSystem.getClip();
+//        } catch (LineUnavailableException ex) {
+//            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        clip.stop();
+        clip.close();
+        try {
+            clip.open(SinusGenerator.generateSinus((float) (Math.pow(10, (this.sldVolume.getValue()-90) / 20)), this.sldFrequency.getValue(), 2, SinusGenerator.Channels.getChannels(leftear, !leftear)));
+        } catch (LineUnavailableException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        clip.start();
+    }
+    
     private void sldAgeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sldAgeStateChanged
         this.lblAge.setText("Wiek: " + Integer.toString(this.sldAge.getValue()));
         exam.setAge(this.sldAge.getValue());
@@ -531,7 +572,8 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void btnRepeatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRepeatActionPerformed
         if(this.btnRepeat.getText()=="Odtwórz"){
-            play();    
+            //play();
+            play2(exam.curentEar==-1);
         }else{
             nextStep();
         }
@@ -576,7 +618,7 @@ public class MainWindow extends javax.swing.JFrame {
             exam.addLeftEarValue(exam.getCurrentFreq(), exam.getCurentVolumeLevel());
         }
         exam.incFrequency();
-        exam.setCurentVolumeLevel(10);
+        exam.setCurentVolumeLevel(5);
         this.sldVolume.setValue((int)exam.getCurentVolumeLevel());
         this.sldFrequency.setValue((int)exam.getCurrentFreq());
 
@@ -653,6 +695,23 @@ public class MainWindow extends javax.swing.JFrame {
             exam.setVolCoef((int)this.spnVolCoef.getValue());
         }
     }//GEN-LAST:event_spnVolCoefStateChanged
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        float frequency = 250;
+        float duration = 5;
+        float amplitude = 0;
+        clip.stop();
+        clip.close();
+        try {
+            clip.open(SinusGenerator.generateSinus((float) (Math.pow(10,amplitude/20)), frequency, duration, SinusGenerator.Channels.getChannels(true,true)));
+        } catch (LineUnavailableException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        clip.start();
+
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -738,6 +797,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnConfirm;
     private javax.swing.JButton btnRefuse;
     private javax.swing.JButton btnRepeat;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonCloseCalibration;
     private javax.swing.JDialog jDialogCalibration;
     private javax.swing.JLabel jLabel1;

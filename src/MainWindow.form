@@ -143,13 +143,13 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="pnlChart" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="lblAge" pref="47" max="32767" attributes="0"/>
+                      <Component id="lblAge" pref="46" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="sldAge" min="-2" pref="564" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="tpnOptions" max="32767" attributes="0"/>
+              <Component id="tpnOptions" pref="253" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -230,11 +230,6 @@
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="txtExamName" max="32767" attributes="0"/>
                                           <Component id="jPanel2" max="32767" attributes="0"/>
-                                          <Group type="102" alignment="0" attributes="0">
-                                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace max="32767" attributes="0"/>
-                                              <Component id="spnFreqCoef" min="-2" pref="42" max="-2" attributes="0"/>
-                                          </Group>
                                           <Group type="102" attributes="0">
                                               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -243,6 +238,14 @@
                                               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace max="32767" attributes="0"/>
                                               <Component id="spnVolCoef" min="-2" pref="42" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Group type="103" groupAlignment="1" attributes="0">
+                                                  <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                                                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                              <EmptySpace max="32767" attributes="0"/>
+                                              <Component id="spnFreqCoef" min="-2" pref="42" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -300,6 +303,8 @@
                                           <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="spnVolCoef" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
+                                      <EmptySpace min="-2" pref="67" max="-2" attributes="0"/>
+                                      <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   </Group>
                                   <Component id="sldVolume" pref="357" max="32767" attributes="0"/>
@@ -326,13 +331,14 @@
           <SubComponents>
             <Component class="javax.swing.JSlider" name="sldFrequency">
               <Properties>
-                <Property name="maximum" type="int" value="22000"/>
-                <Property name="minimum" type="int" value="8"/>
+                <Property name="majorTickSpacing" type="int" value="1000"/>
+                <Property name="maximum" type="int" value="20000"/>
+                <Property name="minimum" type="int" value="20"/>
                 <Property name="minorTickSpacing" type="int" value="100"/>
                 <Property name="orientation" type="int" value="1"/>
                 <Property name="paintTicks" type="boolean" value="true"/>
                 <Property name="toolTipText" type="java.lang.String" value=""/>
-                <Property name="value" type="int" value="4500"/>
+                <Property name="value" type="int" value="1000"/>
               </Properties>
               <Events>
                 <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="sldFrequencyStateChanged"/>
@@ -374,6 +380,7 @@
             </Component>
             <Component class="javax.swing.JSlider" name="sldVolume">
               <Properties>
+                <Property name="majorTickSpacing" type="int" value="25"/>
                 <Property name="minorTickSpacing" type="int" value="1"/>
                 <Property name="orientation" type="int" value="1"/>
                 <Property name="paintTicks" type="boolean" value="true"/>
@@ -507,6 +514,14 @@
               </Properties>
               <Events>
                 <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="spnVolCoefStateChanged"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="jButton1">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="test"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
