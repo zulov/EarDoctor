@@ -108,7 +108,15 @@ public class Exam {
         downLimitRange.add(hAScale(16000), vAScale(30));
         downLimitRange.add(hAScale(20000), vAScale(80));
     }
+    public void clearExam(){
+    comleted = false;
+    leftEarComleted = false;
+    rightEarComleted = false;
 
+    curentEar = -1;
+    currentFreq = 20;
+    curentVolumeLevel = 5;
+    }
     public XYSeries getLeftEar() {
         return leftEar;
     }
@@ -188,10 +196,13 @@ public class Exam {
     public void clearLeftEarValue() {
         leftEar = new XYSeries("Lewe ucho");
     }
-
+    public void clearSeries(){
+        leftEar.clear();
+        rightEar.clear();
+    }
     public void incFrequency() {
         this.currentFreq = this.currentFreq *freqCoef;
-        if (currentFreq > 20000) {
+        if (currentFreq > 21000) {
             if (this.curentEar == -1) {
                 this.curentEar = 1;
                 this.leftEarComleted = true;

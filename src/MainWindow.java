@@ -610,6 +610,8 @@ public class MainWindow extends javax.swing.JFrame {
             this.btnRepeat.setText("Powtórz");
 
         } else {
+            exam.clearSeries();
+            exam.clearExam();
             this.btnBeginExam.setText("Rozpocznij badanie");
             this.btnRepeat.setText("Odtwórz");
             this.sldFrequency.setEnabled(true);
